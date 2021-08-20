@@ -21,4 +21,3 @@ repos:
     hooks:
       - id: terraform_tfsec
       - id: terraform_docs
-      - id: checkov
