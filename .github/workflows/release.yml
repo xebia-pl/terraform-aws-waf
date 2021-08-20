@@ -9,9 +9,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Tag
-        uses: K-Phoen/semver-release-action@v1.3.1
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v5.6
         with:
-          release_branch: main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
