@@ -1,0 +1,30 @@
+name: pre-commit
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.5
+      - uses: terraform-linters/setup-tflint@v1
+        name: Setup TFLint
+        with:
+          tflint_version: v0.31.0
+      - name: Setup dependencies
+        run: |
+          sudo apt-get install build-essential procps curl file git
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/6e383e52b60f7232c77044000a6577d9b146a3a2/install.sh)"
+          brew install tfsec terraform-docs
+      - name: tf init
+        run: terraform init
+      - name: tflint init
+        run: tflint --init
+      - uses: pre-commit/action@v2.0.3
