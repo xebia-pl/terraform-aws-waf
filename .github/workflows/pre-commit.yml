@@ -25,4 +25,6 @@ jobs:
           brew install tfsec terraform-docs
       - name: tf init
         run: terraform init
+      - name: tflint init
+        run: tflint --init
       - uses: pre-commit/action@v2.0.3
