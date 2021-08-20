@@ -22,4 +22,7 @@ jobs:
           brew install tfsec terraform-docs checkov terraform
       - name: tf init
         run: terraform init
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - uses: pre-commit/action@v2.0.3
