@@ -91,8 +91,8 @@ variable "waf_logging_bucket_name" {
 
 variable "waf_logging_bucket_object_expiration_days" {
   description = "Expiry period for Objects in WAF log bucket, in days"
-  type        = string
-  default     = ""
+  type        = number
+  default     = 1
 }
 
 variable "waf_logging_bucket_sse_algorithm" {

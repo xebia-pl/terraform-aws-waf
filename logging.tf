@@ -1,3 +1,8 @@
+locals {
+  waf_cloudwatch_group_name      = "/aws/kinesisfirehose/aws-waf-logs-${var.name_prefix}"
+  waf_cloudwatch_log_stream_name = "S3Delivery"
+}
+
 #tfsec:ignore:AWS002
 module "waf_logging_bucket" {
   count = var.waf_logging_enabled ? 1 : 0
@@ -20,49 +25,23 @@ module "waf_logging_bucket" {
   tags = var.tags
 }
 
-# resource "aws_s3_bucket_policy" "cloudtrail_bucket_policy" {
-#   bucket = module.s3_cloudtrail_bucket.bucket_id
-
-#   policy = jsonencode({
-#     Version = "2012-10-17"
-#     Id      = "CloudTrailBucketPolicy"
-#     Statement = [
-#       {
-#         Sid    = "AWSCloudTrailAclCheck",
-#         Effect = "Allow",
-#         Principal = {
-#           Service = "cloudtrail.amazonaws.com"
-#         },
-#         Action   = "s3:GetBucketAcl",
-#         Resource = module.s3_cloudtrail_bucket.bucket_arn
-#       },
-#       {
-#         Sid    = "AWSCloudTrailWrite",
-#         Effect = "Allow",
-#         Principal = {
-#           Service = "cloudtrail.amazonaws.com"
-#         },
-#         Action   = "s3:PutObject",
-#         Resource = "${module.s3_cloudtrail_bucket.bucket_arn}/*",
-#         Condition = {
-#           StringEquals = {
-#             "s3:x-amz-acl" = "bucket-owner-full-control"
-#           }
-#         }
-#       }
-#     ]
-#   })
-# }
-
-
 resource "aws_kinesis_firehose_delivery_stream" "waf_stream" {
   count       = var.waf_logging_enabled ? 1 : 0
   name        = "aws-waf-logs-${var.name_prefix}" # aws-waf-logs- prefix is required
   destination = "s3"
+  server_side_encryption {
+    enabled  = true
+    key_type = "AWS_OWNED_CMK"
+  }
 
   s3_configuration {
     role_arn   = join("", aws_iam_role.firehose_role.*.arn)
     bucket_arn = join("", module.waf_logging_bucket.*.bucket_arn)
+    cloudwatch_logging_options {
+      enabled         = true
+      log_group_name  = local.waf_cloudwatch_group_name
+      log_stream_name = local.waf_cloudwatch_log_stream_name
+    }
   }
 
   tags = var.tags
@@ -95,7 +74,7 @@ EOF
 resource "aws_iam_role_policy" "firehose_policy" {
   count = var.waf_logging_enabled ? 1 : 0
 
-  role = join("", aws_iam_role.firehose_role.*.arn)
+  role = join("", aws_iam_role.firehose_role.*.id)
 
   policy = jsonencode({
     "Statement" : [
@@ -109,6 +88,9 @@ resource "aws_iam_role_policy" "firehose_policy" {
           "s3:AbortMultipartUpload",
           "s3:ListBucketMultipartUploads",
           "s3:GetBucketLocation",
+          "logs:Create*",
+          "logs:Put*",
+          "logs:Describe*",
         ],
         "Resource" : [
           join("", module.waf_logging_bucket.*.bucket_arn),
