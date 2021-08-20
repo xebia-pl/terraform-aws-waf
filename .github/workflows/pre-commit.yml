@@ -11,6 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.5
       - uses: terraform-linters/setup-tflint@v1
         name: Setup TFLint
         with:
@@ -19,10 +22,7 @@ jobs:
         run: |
           sudo apt-get install build-essential procps curl file git
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/6e383e52b60f7232c77044000a6577d9b146a3a2/install.sh)"
-          brew install tfsec terraform-docs checkov terraform
+          brew install tfsec terraform-docs checkov
       - name: tf init
         run: terraform init
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - uses: pre-commit/action@v2.0.3

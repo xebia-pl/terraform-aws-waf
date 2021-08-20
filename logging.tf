@@ -7,7 +7,7 @@ locals {
 module "waf_logging_bucket" {
   count = var.waf_logging_enabled ? 1 : 0
 
-  source      = "git@github.com:rackspace-infrastructure-automation/aws-terraform-s3//?ref=v0.12.7"
+  source      = "https://github.com/rackspace-infrastructure-automation/aws-terraform-s3.git//?ref=v0.12.7"
   name        = var.waf_logging_bucket_name
   environment = var.environment
 
