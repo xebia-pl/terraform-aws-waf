@@ -1,11 +1,11 @@
 output "waf_log_bucket_name" {
   description = "The name of the WAF log bucket"
-  value       = module.waf_logging_bucket.bucket_id
+  value       = join("", module.waf_logging_bucket.*.bucket_id)
 }
 
 output "waf_log_bucket_arn" {
   description = "The arn of the WAF log bucket"
-  value       = module.waf_logging_bucket.bucket_arn
+  value       = join("", module.waf_logging_bucket.*.bucket_arn)
 }
 
 output "waf_web_acl_arn" {
