@@ -1,3 +1,4 @@
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
 | Name | Version |
@@ -58,3 +59,4 @@
 | waf\_log\_bucket\_name | The name of the WAF log bucket |
 | waf\_web\_acl\_arn | The ARN of the WAF Web ACL |
 | waf\_web\_acl\_capacity | The capacity of the WAF Web ACL |
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
