@@ -30,6 +30,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| block\_graphql\_introspection | Whether to block GraphQL schema introspection | `bool` | `false` | no |
 | bot\_control\_excluded\_rules | List of rule names for the AWSManagedRulesBotControlRuleSet to set to COUNT instead of BLOCK | `list(string)` | `[]` | no |
 | bot\_control\_ruleset\_enabled | Whether to enable AWSManagedRulesBotControlRuleSet | `bool` | `false` | no |
 | cloudwatch\_metrics\_enabled | Whether to enable CloudWatch metrics on the AWS WAF | `bool` | `true` | no |

@@ -77,6 +77,12 @@ variable "bot_control_excluded_rules" {
   default     = []
 }
 
+variable "block_graphql_introspection" {
+  description = "Whether to block GraphQL schema introspection"
+  type        = bool
+  default     = false
+}
+
 variable "waf_logging_enabled" {
   description = "Whether to enable WAF logging and create relevant resources"
   type        = bool

@@ -124,6 +124,37 @@ resource "aws_wafv2_web_acl" "web_acl" {
       }
     }
   }
+
+  dynamic "rule" {
+    for_each = var.block_graphql_introspection ? ["introspection"] : []
+    content {
+      name     = rule.value
+      priority = 500
+      action {
+        block {}
+      }
+      statement {
+
+        byte_match_statement {
+          field_to_match {
+            body {}
+          }
+          positional_constraint = "CONTAINS"
+          search_string         = "__schema"
+          text_transformation {
+            priority = 0
+            type     = "NONE"
+          }
+        }
+      }
+      visibility_config {
+        cloudwatch_metrics_enabled = var.cloudwatch_metrics_enabled
+        metric_name                = "${var.name_prefix}-waf-graphql-introspection"
+        sampled_requests_enabled   = var.sampled_requests_enabled
+      }
+    }
+  }
+
   visibility_config {
     cloudwatch_metrics_enabled = var.cloudwatch_metrics_enabled
     metric_name                = "${var.name_prefix}-waf-metrics"
