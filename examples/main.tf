@@ -21,6 +21,7 @@ module "waf" {
   known_bad_inputs_ruleset_enabled = true
   ip_reputation_ruleset_enabled    = true
   bot_control_ruleset_enabled      = true
+  block_graphql_introspection      = true
 
   waf_logging_enabled                           = true
   waf_logging_bucket_name                       = "${random_pet.bucket_prefix.id}-${random_integer.integer.id}"
